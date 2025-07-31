@@ -182,6 +182,7 @@ def convert_h5(
     precision=None,
     decimals=None,
     loader_class=BroadInstituteLoader,
+    chromosome=None,
 ):
     loader = loader_class()
     logger.debug(f"Converting {infile} loci {start_locus} to {end_locus}")
@@ -194,6 +195,8 @@ def convert_h5(
 
     f.attrs[PREC_ATTR] = precision or np.nan
     f.attrs[DEC_ATTR] = decimals or np.nan
+    if CHROMOSOME_ATTR not in f.attrs and chromosome is not None:
+        f.attrs[CHROMOSOME_ATTR] = chromosome
 
     group_name = CHUNK_NAME.format(locus=start_locus)
     if group_name in f:
@@ -798,9 +801,10 @@ def cli(log_level):
 @click.option("--decimals", "-d", type=int, default=None)
 @click.option("--start-locus", "-s", type=int, required=True)
 @click.option("--end-locus", "-e", type=int, required=True)
+@click.option("--chromosome", "-c", type=int, required=True)
 @loader_option
-def convert(infile, outfile, min_value, decimals, start_locus, end_locus, loader):
-    convert_h5(infile, outfile, start_locus, end_locus, min_value, decimals, loader)
+def convert(infile, outfile, min_value, decimals, start_locus, end_locus, loader, chromosome):
+    convert_h5(infile, outfile, start_locus, end_locus, min_value, decimals, loader, chromosome)
 
 
 @cli.command(short_help="compress a bunch of files")

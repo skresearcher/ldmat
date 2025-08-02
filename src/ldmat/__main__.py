@@ -384,7 +384,7 @@ def subselect(df, rows, columns, range_query):
     if len(bp_rows) == 0 or len(bp_cols) == 0:
         return pd.DataFrame()
 
-    row_inds, col_inds = bp_rows.relative_pos, bp_cols.relative_pos
+    row_inds, col_inds = bp_rows.relative_pos.to_numpy(), bp_cols.relative_pos.to_numpy()
 
     if range_query:
         return df.iloc[row_inds[0] : row_inds[-1] + 1, col_inds[0] : col_inds[-1] + 1]
@@ -416,8 +416,8 @@ def get_horizontal_slice(group, rows, columns, range_query):
     if len(row_positions) and len(col_positions):
         if range_query:
             h_slice = group[LD_DATASET][
-                row_positions[0] : row_positions[-1] + 1,
-                col_positions[0] : col_positions[-1] + 1,
+                row_positions.iloc[0] : row_positions.iloc[-1] + 1,
+                col_positions.iloc[0] : col_positions.iloc[-1] + 1,
             ]
         else:
             h_slice = group[LD_DATASET][row_positions.tolist()][:, col_positions]
